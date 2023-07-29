@@ -73,6 +73,9 @@ def backup_databases():
     HOST = os.environ.get('MONGO_INITDB_DATABASE', 'libredb')
     DATABASE = os.environ.get('MONGO_ADMIN_DATABASE', 'admindb')
     PORT = os.environ.get('DB_PORT', '27017')
+
+    print(USERNAME, PASSWORD, HOST, DATABASE, PORT)
+
     mongoUri = ('mongodb://%s:%s@%s:%s/%s?authSource=admin' %
                 (USERNAME, PASSWORD, HOST, PORT, DATABASE))
     print('mongoUri: %s' % mongoUri)
@@ -100,6 +103,9 @@ def upload_backup_file(backup_file_name: str):
 
 if __name__ == '__main__':
     schedule.every(2).minutes.do(backup_databases)
+    service_account_key = json.loads(
+            base64.decode(os.environ.get('GDRIVE_SA_KEY')))
+    print('service_account_key: %s' % service_account_key)
     # schedule.every().day.at("00:00").do(backup_databases)
 
     while True:
