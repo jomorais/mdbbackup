@@ -35,6 +35,8 @@ def run_backup(mongoUri):
     client = MongoClient(mongoUri)
     databases = client.list_database_names()
     print('backing up databases: %s' % databases)
+    databases.remove('admin')
+    databases.remove('config')
     folders_to_compress = []
     for database_name in databases:
         db = client[database_name]
