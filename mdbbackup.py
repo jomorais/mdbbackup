@@ -43,6 +43,7 @@ def run_backup(mongoUri):
         collections = db.list_collection_names()
         files_to_compress = []
         directory = create_folder_backup(database_name)
+        folders_to_compress.append(directory)
         for collection in collections:
             db_collection = db[collection]
             cursor = db_collection.find({})
