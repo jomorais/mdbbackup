@@ -87,7 +87,7 @@ def upload_backup_file(backup_file_name: str):
     scope = 'https://www.googleapis.com/auth/drive'
     try:
         service_account_key = json.loads(
-            base64.decode(os.environ.get('GDRIVE_SA_KEY')))
+            base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
         print('service_account_key: %s' % service_account_key)
         service = get_service(
             api_name='drive',
@@ -104,7 +104,7 @@ def upload_backup_file(backup_file_name: str):
 if __name__ == '__main__':
     schedule.every(2).minutes.do(backup_databases)
     service_account_key = json.loads(
-            base64.decode(os.environ.get('GDRIVE_SA_KEY')))
+            base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
     print('service_account_key: %s' % service_account_key)
     # schedule.every().day.at("00:00").do(backup_databases)
 
