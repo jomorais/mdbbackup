@@ -72,8 +72,8 @@ def backup_databases():
     mongoUri = ('mongodb://%s:%s@%s:%s/%s?authSource=admin' %
                 (USERNAME, PASSWORD, HOST, PORT, HOST))
     print('mongoUri: %s' % mongoUri)
-    #tar_file_name, tar_file_path = run_backup(mongoUri=mongoUri)
-    #upload_backup_file(tar_file_name)
+    tar_file_name, tar_file_path = run_backup(mongoUri=mongoUri)
+    upload_backup_file(tar_file_name)
 
 
 def upload_backup_file(backup_file_name: str):
