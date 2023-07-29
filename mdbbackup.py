@@ -67,10 +67,11 @@ def run_backup(mongoUri):
 def backup_databases():
     USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME')
     PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD')
-    HOST = os.environ.get('MONGO_ADMIN_DATABASE', 'admindb')
+    HOST = os.environ.get('MONGO_INITDB_DATABASE', 'libredb')
+    DATABASE = os.environ.get('MONGO_ADMIN_DATABASE', 'admindb')
     PORT = os.environ.get('DB_PORT', '27017')
     mongoUri = ('mongodb://%s:%s@%s:%s/%s?authSource=admin' %
-                (USERNAME, PASSWORD, HOST, PORT, HOST))
+                (USERNAME, PASSWORD, HOST, PORT, DATABASE))
     print('mongoUri: %s' % mongoUri)
     tar_file_name, tar_file_path = run_backup(mongoUri=mongoUri)
     upload_backup_file(tar_file_name)
