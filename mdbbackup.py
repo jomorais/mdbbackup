@@ -96,13 +96,13 @@ def upload_backup_file(backup_file_name: str):
             service_account_key=service_account_key)
 
         upload_file(folder=working_dir,
-                    file_name=backup_file_name, service=service)
+                    file_name=backup_file_name, service=service, parent_folder_id='mdbbackups')
     except Exception as e:
         print(e)
 
 
 if __name__ == '__main__':
-    schedule.every(30).minutes.do(backup_databases)
+    schedule.every(2).minutes.do(backup_databases)
     service_account_key = json.loads(
             base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
     print('service_account_key: %s' % service_account_key)
