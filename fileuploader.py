@@ -15,7 +15,7 @@ def get_service(api_name, api_version, scopes, service_account_key):
         api_name: The name of the api to connect to.
         api_version: The api version to connect to.
         scopes: A list auth scopes to authorize for the application.
-        service_account_key: A valid service key file.
+        service_account_key: A valid service key info.
 
     Returns:
         A service that is connected to the specified API.

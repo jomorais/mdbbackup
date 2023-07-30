@@ -93,7 +93,7 @@ def upload_backup_file(backup_file_name: str):
             api_name='drive',
             api_version='v3',
             scopes=[scope],
-            key_file_location=service_account_key)
+            service_account_key=service_account_key)
 
         upload_file(folder=working_dir,
                     file_name=backup_file_name, service=service)
