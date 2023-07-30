@@ -34,7 +34,7 @@ def make_tarfile(output_filename, source_dir):
 def run_backup(mongoUri):
     client = MongoClient(mongoUri)
     databases = client.list_database_names()
-    print('backing up databases: %s' % databases)
+    print('backup in progress... databases: %s' % databases)
     databases.remove('admin')
     databases.remove('config')
     folders_to_compress = []
@@ -63,24 +63,22 @@ def run_backup(mongoUri):
                      (dt.month, dt.day, dt.year, dt.hour, dt.minute))
     make_tarfile(tar_file_path, folders_to_compress)
     print('tar_file_name: %s' % tar_file_name)
-    print('tar_file_path: %s' % tar_file_path)
     return tar_file_name, tar_file_path
 
 
 def backup_databases():
+    print('backup_databases: start...')
     USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME')
     PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD')
     HOST = os.environ.get('MONGO_INITDB_DATABASE', 'libredb')
     DATABASE = os.environ.get('MONGO_ADMIN_DATABASE', 'admindb')
     PORT = os.environ.get('DB_PORT', '27017')
-
-    print(USERNAME, PASSWORD, HOST, DATABASE, PORT)
-
     mongoUri = ('mongodb://%s:%s@%s:%s/%s?authSource=admin' %
                 (USERNAME, PASSWORD, HOST, PORT, DATABASE))
-    print('mongoUri: %s' % mongoUri)
+
     tar_file_name, tar_file_path = run_backup(mongoUri=mongoUri)
     upload_backup_file(tar_file_name)
+    print('backup_databases: done!')
 
 
 def upload_backup_file(backup_file_name: str):
@@ -88,7 +86,7 @@ def upload_backup_file(backup_file_name: str):
     try:
         service_account_key = json.loads(
             base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
-        print('service_account_key: %s' % service_account_key)
+        
         service = get_service(
             api_name='drive',
             api_version='v3',
@@ -104,11 +102,8 @@ def upload_backup_file(backup_file_name: str):
 
 
 if __name__ == '__main__':
-    schedule.every(5).minutes.do(backup_databases)
-    service_account_key = json.loads(
-            base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
-    print('service_account_key: %s' % service_account_key)
-    # schedule.every().day.at("00:00").do(backup_databases)
+    # schedule.every(5).minutes.do(backup_databases)
+    schedule.every().day.at("00:00").do(backup_databases)
 
     while True:
         schedule.run_pending()
