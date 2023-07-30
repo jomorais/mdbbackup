@@ -102,7 +102,7 @@ def upload_backup_file(backup_file_name: str):
 
 
 if __name__ == '__main__':
-    schedule.every(2).minutes.do(backup_databases)
+    schedule.every(30).minutes.do(backup_databases)
     service_account_key = json.loads(
             base64.b64decode(os.environ.get('GDRIVE_SA_KEY')))
     print('service_account_key: %s' % service_account_key)
