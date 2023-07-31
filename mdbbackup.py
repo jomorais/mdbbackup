@@ -127,7 +127,7 @@ def upload_backup_file(backup_file_name: str):
 
 if __name__ == '__main__':
     # schedule.every(5).minutes.do(backup_databases)
-    schedule.every().day.at("00:00").do(backup_databases)
+    schedule.every().day.at("04:00").do(backup_databases)
 
     while True:
         schedule.run_pending()
