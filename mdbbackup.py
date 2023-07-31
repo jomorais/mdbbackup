@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import base64
 import datetime
+import glob
 import json
 import os
 import os.path
@@ -62,12 +63,34 @@ def run_backup(mongoUri):
     tar_file_name = ('bk_complete_%s-%s-%s__%s_%s.tar.gz' %
                      (dt.month, dt.day, dt.year, dt.hour, dt.minute))
     make_tarfile(tar_file_path, folders_to_compress)
+    os.system('sync')
+    time.sleep(2)
+
+    print('cleaning temporary files...')
+    for folder_to_delete in folders_to_compress:
+        print(' > deleting %s ...' % folder_to_delete)
+        os.system('rm -rf %s' % folder_to_delete)
+    print('done.')
+
     print('tar_file_name: %s' % tar_file_name)
     return tar_file_name, tar_file_path
 
 
+def delete_older_backups():
+    current_path = os.getcwd()
+    older_backups = glob.glob('%s/*.tar.gz' % current_path)
+    if len(older_backups) > 0:
+        print('removing older backups...')
+        for older_backup_file in older_backups:
+            print(' > deleting %s' % older_backup_file)
+            os.system('rm -rf %s' % older_backup_file)
+            os.system('sync')
+        print('done.')
+
+
 def backup_databases():
     print('backup_databases: start...')
+    delete_older_backups()
     USERNAME = os.environ.get('MONGO_INITDB_ROOT_USERNAME')
     PASSWORD = os.environ.get('MONGO_INITDB_ROOT_PASSWORD')
     HOST = os.environ.get('MONGO_INITDB_DATABASE', 'libredb')
@@ -77,6 +100,7 @@ def backup_databases():
                 (USERNAME, PASSWORD, HOST, PORT, DATABASE))
 
     tar_file_name, tar_file_path = run_backup(mongoUri=mongoUri)
+    print('uploading %s file...' % tar_file_name)
     upload_backup_file(tar_file_name)
     print('backup_databases: done!')
 
