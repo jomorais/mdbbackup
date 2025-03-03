@@ -54,8 +54,10 @@ def run_backup(mongoUri):
                 file.write('[')
                 for document in cursor:
                     file.write(dumps(document))
-                    file.write(',')
-                file.write(']')
+                    if document is cursor[-1]:
+                        file.write(']')
+                    else:
+                        file.write(',')
     print('folders_to_compress: %s' % folders_to_compress)
     dt = datetime.datetime.now()
     tar_file_path = ('%s/bk_complete_%s-%s-%s__%s_%s.tar.gz' %
