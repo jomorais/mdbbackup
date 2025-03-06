@@ -50,14 +50,20 @@ def run_backup(mongoUri):
             cursor = db_collection.find({})
             filename = ('%s/%s.json' % (directory, collection))
             files_to_compress.append(filename)
-            with open(filename, 'w') as file:
-                file.write('[')
-                for document in cursor:
-                    file.write(dumps(document))
-                    if document is cursor[-1]:
-                        file.write(']')
-                    else:
-                        file.write(',')
+            print('dumping...', filename)
+            file = open(filename, 'w')
+            documents = list(cursor)
+            file.write('[')
+            n_docs = len(documents)
+            count_docs = 0
+            for document in documents:
+                count_docs += 1
+                file.write(dumps(document))
+                if count_docs == n_docs:
+                    file.write(']')
+                else:
+                    file.write(',')
+            file.close()
     print('folders_to_compress: %s' % folders_to_compress)
     dt = datetime.datetime.now()
     tar_file_path = ('%s/bk_complete_%s-%s-%s__%s_%s.tar.gz' %
